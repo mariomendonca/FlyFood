@@ -1,3 +1,5 @@
+import random 
+
 def get_matrix(matrix_txt):
   lista = []
   for line in matrix: 
@@ -8,7 +10,6 @@ def get_matrix(matrix_txt):
     lista.append(linha)
   return lista
 
-
 def get_all_points_and_indexes(matrix):
   array = []
   for line in matrix:
@@ -18,41 +19,8 @@ def get_all_points_and_indexes(matrix):
         array.append(point_tuple)
   return array 
 
-def get_all_points(matrix):
-  points = []
-  for line in matrix:
-    for x in line:
-      if (x != '0') and (x != 'R'):
-        points.append(x)
-  
-  return points
 
-
-def permutation(points):
-  if len(points) == 0:
-    return []
-  elif len(points) == 1:
-    return [points]
-  else:
-    lista = []
-    for i in range(len(points)):
-      x = points[i]
-      xs = points[:i] + points[i + 1:]
-      for p in permutation(xs):
-        lista.append([x] + p)
-
-  return lista
-
-
-def all_routes(points):
-  routes = []
-  for x in permutation(points):
-    string = ''.join(x)
-    routes.append(string)
-
-  return routes
-
-
+# fazer a adaptacao em relacao as rota
 def shortest_distance(routes, points):
   melhor_rota_distancia = 0
   melhor_rota = None
@@ -88,14 +56,49 @@ def shortest_distance(routes, points):
 
   return melhor_rota, melhor_rota_distancia
 
+def get_all_points(matrix):
+  points = []
+  for line in matrix:
+    for x in line:
+      if (x != '0') and (x != 'R'):
+        points.append(x)
+  
+  return points
+
+def shuffled_points(array):
+  random.shuffle(array)
+  return array
+
+def fatorial(n):
+  if n <= 1: 
+    return 1
+  else: 
+    return n * fatorial(n - 1)
+
+def get_some_routes(points):
+  qnt_de_rotas = fatorial(int(len(points))) // 2
+  routes = []
+  for i in range(qnt_de_rotas):
+    test = points.copy()
+    x = shuffled_points(test)
+    routes.append(x)
+
+  return routes
 
 matrix = open('matrix.txt', 'r')
+
 matriz = get_matrix(matrix)
-tuple_points = get_all_points_and_indexes(matriz)
 points = get_all_points(matriz)
-routes = all_routes(points)
+routes = get_some_routes(points)
+tuple_points = get_all_points_and_indexes(matriz)
 menor_distancia = shortest_distance(routes, tuple_points)
 
 print(menor_distancia)
+# print(shuffled_points(points))
+"""
+fazer uma parmutation e um random pra escolher o index o numero de vezes q eu escolher
 
-matrix.close()
+embaralhar as string
+
+https://www.youtube.com/watch?v=QTMo_El_tMU
+"""
