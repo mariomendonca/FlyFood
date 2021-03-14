@@ -1,4 +1,4 @@
-from timeit import timeit
+import random 
 
 def get_matrix(matrix_txt):
   lista = []
@@ -10,7 +10,6 @@ def get_matrix(matrix_txt):
     lista.append(linha)
   return lista
 
-
 def get_all_points_and_indexes(matrix):
   array = []
   for line in matrix:
@@ -19,6 +18,9 @@ def get_all_points_and_indexes(matrix):
         point_tuple = (x, matrix.index(line), line.index(x))
         array.append(point_tuple)
   return array 
+
+
+# fazer a adaptacao em relacao as rota
 
 def get_all_points(matrix):
   points = []
@@ -29,44 +31,32 @@ def get_all_points(matrix):
   
   return points
 
+def shuffled_points(array):
+  random.shuffle(array)
+  return array
 
-def permutation(points):
-  if len(points) == 0:
-    return []
-  elif len(points) == 1:
-    return [points]
-  else:
-    lista = []
-    for i in range(len(points)):
-      x = points[i]
-      xs = points[:i] + points[i + 1:]
-      for p in permutation(xs):
-        lista.append([x] + p)
-
-  return lista
+def fatorial(n):
+  if n <= 1: 
+    return 1
+  else: 
+    return n * fatorial(n - 1)
 
 
-def all_routes(points):
-  routes = []
-  for x in permutation(points):
-    string = ''.join(x)
-    routes.append(string)
-
-  return routes
-
-
-def shortest_distance(routes, points):
-  melhor_rota_distancia = 0
+def shortest_distance(route, points):
   melhor_rota = None
-  # cada rota
-  for route in routes:
+  melhor_rota_distancia = 0
+  maximo_de_vezes = fatorial(int(len(route))) // 2
+  minimo_de_vezes = fatorial(int(len(route))) // 5
+  contador_minimo = 1
+  contador_maximo = 1
+  
+  while contador_minimo <  minimo_de_vezes and contador_maximo <= maximo_de_vezes:
     valor_total = 0 
     ponto_ordernados = []
-
+    route = shuffled_points(route)
     for point in route:
-      # print(route, point)
       for x in points:
-        if point == x[0]:
+        if point == x[0]:      
           ponto_ordernados.append(x)
     # ponto de partida e chegada (estabelecimento)
     for point in points:
@@ -74,30 +64,31 @@ def shortest_distance(routes, points):
         ponto_ordernados.insert(0, point)
         ponto_ordernados.append(point)
 
-    # print(ponto_ordernados)
     for i in range(len(ponto_ordernados) - 1):
       soma1 = abs(ponto_ordernados[i][1] - ponto_ordernados[i + 1][1])
       soma2 = abs(ponto_ordernados[i][2] - ponto_ordernados[i + 1][2])
       distancia = soma1 + soma2
       valor_total += distancia
-    # print(valor_total)
-
+    
     if melhor_rota_distancia == 0:
       melhor_rota_distancia = valor_total
     if valor_total <= melhor_rota_distancia:
       melhor_rota_distancia = valor_total
       melhor_rota = route
+      contador_minimo += 1
+
+    contador_maximo += 1
 
   return melhor_rota, melhor_rota_distancia
 
 
+
 matrix = open('matrix.txt', 'r')
+
 matriz = get_matrix(matrix)
-tuple_points = get_all_points_and_indexes(matriz)
 points = get_all_points(matriz)
-routes = all_routes(points)
-menor_distancia = shortest_distance(routes, tuple_points)
+tuple_points = get_all_points_and_indexes(matriz)
 
-print(menor_distancia)
 
-matrix.close()
+testing = shortest_distance(points, tuple_points)
+print(testing)

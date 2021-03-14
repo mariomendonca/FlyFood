@@ -85,6 +85,7 @@ def get_some_routes(points):
 
   return routes
 
+
 matrix = open('matrix.txt', 'r')
 
 matriz = get_matrix(matrix)
@@ -92,13 +93,4 @@ points = get_all_points(matriz)
 routes = get_some_routes(points)
 tuple_points = get_all_points_and_indexes(matriz)
 menor_distancia = shortest_distance(routes, tuple_points)
-
 print(menor_distancia)
-# print(shuffled_points(points))
-"""
-fazer uma parmutation e um random pra escolher o index o numero de vezes q eu escolher
-
-embaralhar as string
-
-https://www.youtube.com/watch?v=QTMo_El_tMU
-"""
